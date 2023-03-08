@@ -5,14 +5,14 @@ use std::str::from_utf8;
 fn main() {
     match TcpStream::connect("localhost:7878") {
         Ok(mut stream) => {
-            println!("Successfully connected to server in port 3333");
+            println!("Successfully connected to server in port 7878");
 
             let get_req = b"GET / HTTP/1.1\r\n";
 
             stream.write(get_req).unwrap();
             println!("Sent get req, awaiting reply...");
 
-            let mut data = [0 as u8; 1024]; // using 6 byte buffer
+            let mut data = [0 as u8; 1024];
             match stream.read(&mut data) {
                 Ok(ret) => {
 					let text = from_utf8(&data).unwrap();

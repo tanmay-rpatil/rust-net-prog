@@ -1,4 +1,5 @@
 use std::fs;
+// use std::str;
 use std::net::TcpListener;
 use std::net::TcpStream;
 use std::io::prelude::*;
@@ -23,15 +24,25 @@ fn handle_conn(mut stream: TcpStream) {
 	// );
 	
 	let get = b"GET / HTTP/1.1\r\n";
+	// println!("{:?}",str::from_utf8(&buffer));
 
+	let mut resp= String::from("");
+	let mut fname= String::from("");
 	if buffer.starts_with(get){
-		print!("yes\n");
+		print!("valid get req\n");
+		resp.push_str("HTTP/1.1 200 OK");
+		fname.push_str("static/index.html");
+	} else {
+		print!("invalid get req\n");
+		resp.push_str("HTTP/1.1 405 NOT ALLOWED\r\nAllow: \"GET\"");
+		fname.push_str("static/405.html");
 	}
 
-	let contents = fs::read_to_string("static/index.html").unwrap();
+	let contents = fs::read_to_string(fname).unwrap();
 
 	let response = format!(
-		"HTTP/1.1 200 OK\r\nContent-Length: {}\r\n\r\n{}", 
+		"{}\r\nContent-Length: {}\r\n\r\n{}", 
+		resp,
 		contents.len(),
 		contents
 	) ;
